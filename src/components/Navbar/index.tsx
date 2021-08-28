@@ -12,6 +12,9 @@ export default function Navbar(): JSX.Element {
   let location = useLocation();
   useEffect(() => {
     switch (location.pathname) {
+      case "/":
+        setLine(styles.line1);
+        break;
       case "/homemates-needs":
         setLine(styles.line2);
         break;
@@ -19,7 +22,7 @@ export default function Navbar(): JSX.Element {
         setLine(styles.line3);
         break;
       default:
-        setLine(styles.line1);
+        setLine("");
     }
   }, [location]);
 

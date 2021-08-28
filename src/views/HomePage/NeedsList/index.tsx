@@ -13,7 +13,7 @@ export default function NeedsList(props: Props): JSX.Element {
   const { title = "Needs", needs = [], active = true, onNeedClick } = props;
 
   return (
-    <div className={classnames("contentContainer", !active && styles.inactive)}>
+    <div className={classnames(!active && styles.inactive)}>
       {needs.find((elem) => elem.active === active) && (
         <>
           <h2 className={styles.label}>{title}</h2>
@@ -21,7 +21,7 @@ export default function NeedsList(props: Props): JSX.Element {
             {needs.map(
               (need) =>
                 need.active === active && (
-                  <li onClick={() => onNeedClick(need)} key={need.name}>
+                  <li onClick={() => onNeedClick(need)} key={need.id}>
                     {need.name}
                   </li>
                 )
