@@ -1,0 +1,15 @@
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin font-size-14 {
+  font-size: 14px;
+  line-height: 22px;
+}
+
+@mixin font-size-24 {
+  font-size: 24px;
+  line-height: 37px;
+}

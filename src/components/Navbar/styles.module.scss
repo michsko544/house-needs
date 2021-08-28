@@ -1,0 +1,62 @@
+@import "~styles/_variables";
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+
+  h1 {
+    padding: 12px 0;
+  }
+
+  & > * {
+    height: 60px;
+  }
+}
+
+.navigation {
+  display: flex;
+  justify-content: flex-start;
+  background-color: $gray-color;
+  position: relative;
+
+  a {
+    padding: 18px 24px;
+    height: 60px;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &::after {
+    width: 72px;
+    height: 2px;
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: $black;
+    transition: cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s transform;
+  }
+}
+
+.line1 {
+  &::after {
+    transform: translate(0%, 0);
+  }
+}
+
+.line2 {
+  &::after {
+    transform: translate(100%, 0);
+  }
+}
+
+.line3 {
+  &::after {
+    transform: translate(200%, 0);
+  }
+}

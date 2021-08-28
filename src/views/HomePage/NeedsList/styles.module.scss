@@ -1,0 +1,19 @@
+@import "~styles/_variables";
+
+.label {
+  margin: 24px 0 16px;
+}
+
+.list {
+  li {
+    width: 100%;
+    background-color: $gray-color;
+    padding: 18px 16px;
+
+    margin-bottom: 12px;
+  }
+}
+
+.inactive {
+  opacity: 0.64;
+}
