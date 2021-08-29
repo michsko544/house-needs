@@ -9,17 +9,24 @@
     width: 100%;
     background-color: $gray-color;
     height: 58px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     margin-bottom: 12px;
+
+    .normalElement {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+    }
 
     span {
       height: 100%;
       width: 100%;
       display: flex;
       padding-left: 16px;
+      padding-right: 16px;
       align-items: center;
+      overflow: auto;
+      white-space: nowrap;
     }
 
     button {
