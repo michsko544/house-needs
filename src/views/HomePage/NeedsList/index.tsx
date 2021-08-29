@@ -2,6 +2,7 @@ import styles from "./styles.module.scss";
 import classnames from "classnames";
 import { HouseNeed } from "models/HouseNeed";
 import { ReactComponent as TrashIcon } from "assets/trash.svg";
+import ContentWithLabel from "components/ContentWithLabel";
 
 type Props = {
   title: string;
@@ -23,8 +24,7 @@ export default function NeedsList(props: Props): JSX.Element {
   return (
     <div className={classnames(!active && styles.inactive)}>
       {needs.find((elem) => elem.active === active) && (
-        <>
-          <h2 className={styles.label}>{title}</h2>
+        <ContentWithLabel title={title}>
           <ul className={styles.list}>
             {needs.map(
               (need) =>
@@ -42,7 +42,7 @@ export default function NeedsList(props: Props): JSX.Element {
                 )
             )}
           </ul>
-        </>
+        </ContentWithLabel>
       )}
     </div>
   );

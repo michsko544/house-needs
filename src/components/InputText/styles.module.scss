@@ -1,0 +1,32 @@
+@import "~styles/_variables";
+@import "~styles/_mixins";
+
+.input {
+  width: 100%;
+  @include font-size-14;
+  margin-top: 12px;
+  display: block;
+
+  & > span {
+    display: block;
+    margin-top: 4px;
+  }
+
+  input {
+    width: 100%;
+    margin-top: 4px;
+    @include font-size-14;
+    font-family: "Pridi", serif;
+    background-color: $gray-color;
+    color: $black;
+    border: none;
+    padding: 18px 16px;
+
+    &::placeholder {
+      @include font-size-14;
+      font-family: "Pridi", serif;
+      color: $black;
+      opacity: 0.64;
+    }
+  }
+}

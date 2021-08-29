@@ -1,18 +1,15 @@
 import { HouseNeed } from "models/HouseNeed";
-import { useEffect, useState } from "react";
 import { supabase } from "supabase";
 import NeedsList from "./NeedsList";
 import AddNeedInput from "./AddNeedInput";
+import useHouseNeeds from "./useHouseNeeds";
 
 export default function HomePage(): JSX.Element {
-  const fetchHouseNeeds = async () => {
-    const { data } = await supabase.from("home-needs").select("*");
-    setNeeds(data as HouseNeed[]);
-  };
+  const [needs, { addNeed, updateNeed, deleteNeed }] = useHouseNeeds();
 
   const addHouseNeed = async (need: Omit<HouseNeed, "id">) => {
     const { data } = await supabase.from("home-needs").insert([need]).single();
-    setNeeds([...needs, data]);
+    addNeed(data);
   };
 
   const updateHouseNeedActivity = async (id: string, active: boolean) => {
@@ -22,23 +19,16 @@ export default function HomePage(): JSX.Element {
       .eq("id", id)
       .single();
 
-    const withoutUpdated = needs.filter((elem) => elem.id !== id);
-    setNeeds([...withoutUpdated, data]);
+    updateNeed(data);
   };
 
   const deleteHouseNeed = async (id: string) => {
     const { error } = await supabase.from("home-needs").delete().eq("id", id);
 
     if (!error) {
-      setNeeds(needs.filter((elem) => elem.id !== id));
+      deleteNeed(id);
     }
   };
-
-  const [needs, setNeeds] = useState<HouseNeed[]>([]);
-
-  useEffect(() => {
-    fetchHouseNeeds();
-  }, []);
 
   const handleNeedClick = (need: HouseNeed) => {
     updateHouseNeedActivity(need.id, !need.active);

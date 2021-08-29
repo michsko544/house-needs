@@ -21,6 +21,12 @@ export default function Navbar(): JSX.Element {
       case "/messages":
         setLine(styles.line3);
         break;
+      case "/register":
+        setLine(styles.line2);
+        break;
+      case "/login":
+        setLine(styles.line1);
+        break;
       default:
         setLine("");
     }
