@@ -84,7 +84,7 @@ export default function LoginForm(): JSX.Element {
           }
         />
         <Button type="submit" disabled={formik.isSubmitting}>
-          Sign in
+          Sign up
         </Button>
       </form>
       <Link to="/login" className={styles.loginLink}>
