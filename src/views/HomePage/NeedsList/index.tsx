@@ -30,12 +30,14 @@ export default function NeedsList(props: Props): JSX.Element {
               (need) =>
                 need.active === active && (
                   <li key={need.id}>
-                    <span onClick={() => onNeedClick(need)}>{need.name}</span>
-                    {need.active && (
-                      <button onClick={() => onTrashClick(need.id)}>
-                        <TrashIcon />
-                      </button>
-                    )}
+                    <div className={styles.normalElement}>
+                      <span onClick={() => onNeedClick(need)}>{need.name}</span>
+                      {need.active && (
+                        <button onClick={() => onTrashClick(need.id)}>
+                          <TrashIcon />
+                        </button>
+                      )}
+                    </div>
                   </li>
                 )
             )}
