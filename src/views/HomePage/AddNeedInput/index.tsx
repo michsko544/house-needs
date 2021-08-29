@@ -21,7 +21,10 @@ export default function AddNeedInput(props: Props): JSX.Element {
   };
 
   const handleCheckClick = (text: string) => {
-    onCheckClick(text);
+    if (text !== "") {
+      onCheckClick(text);
+      setOpen(false);
+    }
     setText("");
   };
 

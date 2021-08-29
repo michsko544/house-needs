@@ -12,7 +12,6 @@ export default function HomePage(): JSX.Element {
 
   const addHouseNeed = async (need: Omit<HouseNeed, "id">) => {
     const { data } = await supabase.from("home-needs").insert([need]).single();
-    console.log(data);
     setNeeds([...needs, data]);
   };
 
@@ -27,18 +26,30 @@ export default function HomePage(): JSX.Element {
     setNeeds([...withoutUpdated, data]);
   };
 
+  const deleteHouseNeed = async (id: string) => {
+    const { error } = await supabase.from("home-needs").delete().eq("id", id);
+
+    if (!error) {
+      setNeeds(needs.filter((elem) => elem.id !== id));
+    }
+  };
+
+  const [needs, setNeeds] = useState<HouseNeed[]>([]);
+
   useEffect(() => {
     fetchHouseNeeds();
   }, []);
-
-  const [needs, setNeeds] = useState<HouseNeed[]>([]);
 
   const handleNeedClick = (need: HouseNeed) => {
     updateHouseNeedActivity(need.id, !need.active);
   };
 
   const handleNeedAdd = (text: string) => {
-    if (text !== "") addHouseNeed({ name: text, active: true });
+    addHouseNeed({ name: text, active: true });
+  };
+
+  const handleTrashClick = (id: string) => {
+    deleteHouseNeed(id);
   };
 
   return (
@@ -47,6 +58,7 @@ export default function HomePage(): JSX.Element {
         title="Top needs"
         needs={needs}
         onNeedClick={handleNeedClick}
+        onTrashClick={handleTrashClick}
       />
       <NeedsList
         title="Realized needs"
