@@ -1,9 +1,7 @@
 import ContentWithLabel from "components/ContentWithLabel";
 import RegisterForm from "./RegisterForm";
 
-type Props = {};
-
-export default function RegisterPage({}: Props): JSX.Element {
+export default function RegisterPage(): JSX.Element {
   return (
     <div className="contentContainer">
       <ContentWithLabel title="Register">
