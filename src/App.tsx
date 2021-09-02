@@ -7,11 +7,13 @@ import HomematesNeedsPage from "views/HomematesNeedsPage";
 import LoginPage from "views/LoginPage";
 import RegisterPage from "views/RegisterPage";
 import PrivateRoute from "components/PrivateRoute";
+import AppInit from "components/AppInit";
 
 function App() {
   return (
     <div className="App">
       <Router>
+        <AppInit />
         <Navbar />
         <PrivateRoute exact path="/">
           <HomePage />

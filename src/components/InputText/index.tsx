@@ -37,7 +37,7 @@ export default function InputText(props: Props): JSX.Element {
         disabled={disabled}
         placeholder={placeholder}
       />
-      {error && <span>{error}</span>}
+      {error && <b>{error}</b>}
     </label>
   );
 }

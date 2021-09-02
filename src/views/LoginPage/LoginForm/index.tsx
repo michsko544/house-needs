@@ -7,7 +7,7 @@ import Button from "components/Button";
 import { supabase } from "supabase";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { login } from "store/auth";
+import { login, setHouse } from "store/auth";
 
 interface LogIn {
   email: string;
@@ -30,10 +30,15 @@ export default function LoginForm(): JSX.Element {
 
   const handleSubmit = async (values: LogIn): Promise<void> => {
     let { user, error } = await supabase.auth.signIn(values);
-    console.log(user);
-    if (!error && user) {
+    let { data: house, error: profileError } = await supabase
+      .from("profiles")
+      .select("house_id")
+      .eq("id", user?.id)
+      .single();
+    if (!error && !profileError && user) {
       formik.resetForm();
       dispatch(login(user));
+      dispatch(setHouse({ id: house.house_id, name: "" }));
       history.replace("/");
     }
   };
