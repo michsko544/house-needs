@@ -6,6 +6,7 @@
   left: 0;
   width: 100%;
   background-color: $white;
+  z-index: 50;
 
   h1 {
     padding: 12px 0;
@@ -14,6 +15,12 @@
   & > * {
     height: 60px;
   }
+}
+
+.topHeaderWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .navigation {
@@ -59,5 +66,62 @@
 .line3 {
   &::after {
     transform: translate(200%, 0);
+  }
+}
+
+.settingsBackground {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  background-color: rgba($black, 0.5);
+  top: 0;
+  right: 0;
+  z-index: 100;
+  transition: 0.3s ease-in opacity;
+  opacity: 0;
+  visibility: hidden;
+
+  &.open {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.settings {
+  width: 90vw;
+  height: 100%;
+  position: absolute;
+  background-color: $white;
+  top: 0;
+  right: 0;
+  transform: translateX(100%);
+  transition: 0.5s all 0.3s cubic-bezier(0, 0.52, 0, 1);
+  padding: 18px 24px;
+
+  &.open {
+    transform: translateX(0);
+  }
+
+  .settingsInner {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .close {
+    align-self: flex-end;
+  }
+
+  .logout {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    span {
+      font-weight: bold;
+    }
   }
 }

@@ -5,6 +5,7 @@ type Props = {
   label: string;
   type?: "text" | "password" | "email";
   error?: string;
+  value: string;
   placeholder?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
@@ -17,6 +18,7 @@ export default function InputText(props: Props): JSX.Element {
     id,
     type = "text",
     error,
+    value,
     label,
     placeholder = "",
     onChange,
@@ -34,6 +36,7 @@ export default function InputText(props: Props): JSX.Element {
         {...restProps}
         autoComplete={autoComplete}
         onChange={onChange}
+        value={value}
         disabled={disabled}
         placeholder={placeholder}
       />

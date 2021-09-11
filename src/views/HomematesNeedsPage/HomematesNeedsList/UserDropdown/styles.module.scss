@@ -1,0 +1,68 @@
+@import "~styles/_variables";
+
+.userDropdown {
+  width: 100%;
+  margin-bottom: 12px;
+  background-color: $gray-color;
+
+  .userDropdownInner {
+    padding: 18px 16px;
+
+    .chevron {
+      transition: ease-in 0.2s transform;
+      transform: rotate(180deg);
+    }
+
+    ul {
+      max-height: 0;
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: ease-in 0.3s opacity, ease-in 0.3s max-height,
+        ease-in 0.3s transform;
+    }
+
+    &.open {
+      .chevron {
+        transform: rotate(0deg);
+      }
+
+      ul {
+        margin-top: 18px;
+        visibility: visible;
+        opacity: 1;
+        max-height: fit-content;
+        transform: translateY(0);
+      }
+    }
+  }
+
+  .titleWrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .title {
+    display: flex;
+    align-items: center;
+
+    .name {
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 21px;
+    }
+
+    .userIcon {
+      width: 16px;
+      height: 16px;
+      margin-left: 8px;
+    }
+  }
+
+  ul {
+    li {
+      margin-bottom: 8px;
+    }
+  }
+}

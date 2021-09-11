@@ -7,6 +7,9 @@ import Button from "components/Button";
 import { supabase } from "supabase";
 import { Link } from "react-router-dom";
 
+type Props = {
+  house: string;
+};
 interface Register {
   email: string;
   firstName: string;
@@ -25,11 +28,11 @@ const RegisterValidationSchema = Yup.object().shape({
     .required("Second password is required"),
 });
 
-export default function RegisterForm(): JSX.Element {
+export default function RegisterForm({ house }: Props): JSX.Element {
   const initialValues: Register = {
     email: "",
     firstName: "",
-    house: "",
+    house,
     password: "",
     secondPassword: "",
   };
@@ -78,6 +81,7 @@ export default function RegisterForm(): JSX.Element {
     initialValues: initialValues,
     validationSchema: RegisterValidationSchema,
     onSubmit: handleSubmit,
+    enableReinitialize: true,
   });
 
   return (
@@ -90,6 +94,7 @@ export default function RegisterForm(): JSX.Element {
           placeholder="jam@jam.com"
           onChange={handleChange}
           autoComplete="email"
+          value={formik.values.email}
           disabled={formik.isSubmitting}
           error={(formik.touched.email && formik.errors.email) || ""}
         />
@@ -100,6 +105,7 @@ export default function RegisterForm(): JSX.Element {
           placeholder="Joe"
           onChange={handleChange}
           autoComplete="given-name"
+          value={formik.values.firstName}
           disabled={formik.isSubmitting}
           error={(formik.touched.firstName && formik.errors.firstName) || ""}
         />
@@ -110,6 +116,7 @@ export default function RegisterForm(): JSX.Element {
           placeholder="Doe"
           onChange={handleChange}
           autoComplete="family-name"
+          value={formik.values.house}
           disabled={formik.isSubmitting}
           error={(formik.touched.house && formik.errors.house) || ""}
         />
@@ -120,6 +127,7 @@ export default function RegisterForm(): JSX.Element {
           placeholder="*************"
           onChange={handleChange}
           autoComplete="new-password"
+          value={formik.values.password}
           disabled={formik.isSubmitting}
           error={(formik.touched.password && formik.errors.password) || ""}
         />
@@ -130,6 +138,7 @@ export default function RegisterForm(): JSX.Element {
           placeholder="*************"
           onChange={handleChange}
           autoComplete="new-password"
+          value={formik.values.secondPassword}
           disabled={formik.isSubmitting}
           error={
             (formik.touched.secondPassword && formik.errors.secondPassword) ||

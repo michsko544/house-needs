@@ -63,6 +63,7 @@ export default function LoginForm(): JSX.Element {
           placeholder="jam@jam.com"
           onChange={handleChange}
           autoComplete="email"
+          value={formik.values.email}
           disabled={formik.isSubmitting}
           error={(formik.touched.email && formik.errors.email) || ""}
         />
@@ -73,6 +74,7 @@ export default function LoginForm(): JSX.Element {
           placeholder="*************"
           onChange={handleChange}
           autoComplete="current-password"
+          value={formik.values.password}
           disabled={formik.isSubmitting}
           error={(formik.touched.password && formik.errors.password) || ""}
         />
