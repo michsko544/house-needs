@@ -6,7 +6,7 @@ import { ReactComponent as SettingsIcon } from "assets/settings.svg";
 import { ReactComponent as XIcon } from "assets/x.svg";
 import { ReactComponent as LogoutIcon } from "assets/log-out.svg";
 import { NavLink, useHistory, useLocation } from "react-router-dom";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import classnames from "classnames";
 
 import styles from "./styles.module.scss";
@@ -16,19 +16,42 @@ import useOutsideClick from "hooks/useOutsideClick";
 import { supabase } from "supabase";
 import { logout } from "store/auth";
 import NeedsList from "components/NeedsList";
-import { UserNeed } from "models/UserNeed";
+import { UserNeed, UserNeedEdit } from "models/UserNeed";
 import { Need } from "models/Need";
+import useUserNeeds from "hooks/useUserNeeds";
+import AddNeedInput from "components/AddNeedInput";
 
 export default function Navbar(): JSX.Element {
   const dispatch = useDispatch();
   const history = useHistory();
-  const isLoggedin = useSelector((state: RootState) => state.auth.isLoggedin);
   const user = supabase.auth.user();
+  const userNeeds = useSelector(
+    (state: RootState) => state.userNeeds.userNeeds
+  );
+  const isLoggedin = useSelector((state: RootState) => state.auth.isLoggedin);
+  const house = useSelector((state: RootState) => state.auth.house);
   const [line, setLine] = useState(styles.line1);
   const [isOpen, setOpen] = useState(false);
-  const [userNeeds, setUserNeeds] = useState<UserNeed[] | null>(null);
   const settingsRef = useRef(null);
   const settingsBgRef = useRef(null);
+  const [{ deleteNeed }, { isLoading, error }, refetch] = useUserNeeds(
+    house?.id || ""
+  );
+
+  const addUserNeed = async (need: UserNeedEdit) => {
+    await supabase.from("user-needs").insert([need]).single();
+    refetch(house?.id || "");
+  };
+
+  const deleteUserNeed = async (id: string) => {
+    const { error } = await supabase
+      .from("user-needs")
+      .update({ active: false })
+      .eq("id", id)
+      .single();
+
+    if (!error) deleteNeed(id);
+  };
 
   const toggleOpen = (state: boolean) => setOpen(!state);
   useOutsideClick(settingsRef, () => toggleOpen(isOpen), settingsBgRef);
@@ -63,38 +86,21 @@ export default function Navbar(): JSX.Element {
     }
   }, [location]);
 
-  const getUserNeeds = useCallback(
-    async (userId: string) => {
-      let { data, error } = await supabase
-        .from("user-needs")
-        .select(
-          `
-        id,
-        need,
-        created_at,
-        user: profiles (
-          first_name,
-          id
-        )
-      `
-        )
-        .eq("user_id", userId);
-      if (!error) setUserNeeds(data as UserNeed[]);
-    },
-    [setUserNeeds]
-  );
-
-  useEffect(() => {
-    if (user && user.id) {
-      getUserNeeds(user.id);
-    }
-  }, [user, getUserNeeds]);
-
-  const prepareData = (needs: UserNeed[], active: boolean): Need[] =>
+  const prepareData = (needs: UserNeed[]): Need[] =>
     needs.reduce((acc: Need[], elem: UserNeed): Need[] => {
-      if (true === active) acc.push({ need: elem.need, id: elem.id });
+      if (elem.user.id === user?.id) acc.push({ need: elem.need, id: elem.id });
       return acc;
     }, []);
+
+  const handleNeedAdd = (text: string) => {
+    if (user && house && typeof house.id === "string")
+      addUserNeed({
+        need: text,
+        active: true,
+        user_id: user.id,
+        house_id: house.id,
+      });
+  };
 
   return (
     <>
@@ -148,13 +154,20 @@ export default function Navbar(): JSX.Element {
               <span>Logout</span>
             </div>
 
-            <NeedsList
-              title="Your needs"
-              needs={prepareData(userNeeds || [], true)}
-              onNeedClick={() => {}}
-              onTrashClick={() => {}}
-              labelAlign="right"
-            />
+            {error && <p>{"Something went wrong :("}</p>}
+            {isLoading && userNeeds.length === 0 && (
+              <p className="loader">Loading...</p>
+            )}
+            {userNeeds.length > 0 && !isLoading && (
+              <NeedsList
+                title="Your needs"
+                needs={prepareData(userNeeds)}
+                onNeedClick={() => {}}
+                onTrashClick={deleteUserNeed}
+                labelAlign="right"
+              />
+            )}
+            <AddNeedInput onCheckClick={handleNeedAdd} />
           </div>
         </div>
       </div>

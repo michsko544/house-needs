@@ -10,7 +10,7 @@
 
     .chevron {
       transition: ease-in 0.2s transform;
-      transform: rotate(180deg);
+      transform: rotate(0deg);
     }
 
     ul {
@@ -24,7 +24,7 @@
 
     &.open {
       .chevron {
-        transform: rotate(0deg);
+        transform: rotate(180deg);
       }
 
       ul {

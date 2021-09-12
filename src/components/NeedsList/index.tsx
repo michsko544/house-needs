@@ -1,6 +1,6 @@
 import styles from "./styles.module.scss";
 import classnames from "classnames";
-import { ReactComponent as TrashIcon } from "assets/trash.svg";
+import { ReactComponent as XIcon } from "assets/x.svg";
 import ContentWithLabel from "components/ContentWithLabel";
 import { Need } from "models/Need";
 
@@ -33,7 +33,7 @@ export default function NeedsList(props: Props): JSX.Element {
                 <span onClick={() => onNeedClick(need)}>{need.need}</span>
                 {active && (
                   <button onClick={() => onTrashClick(need.id)}>
-                    <TrashIcon />
+                    <XIcon />
                   </button>
                 )}
               </div>

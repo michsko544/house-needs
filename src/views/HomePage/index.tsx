@@ -1,12 +1,13 @@
 import { HouseNeed } from "models/HouseNeed";
 import { supabase } from "supabase";
 import NeedsList from "components/NeedsList";
-import AddNeedInput from "./AddNeedInput";
+import AddNeedInput from "../../components/AddNeedInput";
 import useHouseNeeds from "./useHouseNeeds";
 import { Need } from "models/Need";
 
 export default function HomePage(): JSX.Element {
-  const [needs, { addNeed, updateNeed, deleteNeed }] = useHouseNeeds();
+  const [needs, { addNeed, updateNeed, deleteNeed }, { isLoading, error }] =
+    useHouseNeeds();
 
   const addHouseNeed = async (need: Omit<HouseNeed, "id">) => {
     const { data } = await supabase.from("home-needs").insert([need]).single();
@@ -52,18 +53,24 @@ export default function HomePage(): JSX.Element {
 
   return (
     <div className="contentContainer" style={{ paddingBottom: 82 }}>
-      <NeedsList
-        title="Top needs"
-        needs={prepareData(needs, true)}
-        onNeedClick={handleNeedClick}
-        onTrashClick={handleTrashClick}
-      />
-      <NeedsList
-        title="Realized needs"
-        needs={prepareData(needs, false)}
-        active={false}
-        onNeedClick={handleNeedClick}
-      />
+      {isLoading && <p className="loader">Loading...</p>}
+      {error && <p>{"Something went wrong :("}</p>}
+      {needs.length > 0 && !isLoading && (
+        <>
+          <NeedsList
+            title="Top needs"
+            needs={prepareData(needs, true)}
+            onNeedClick={handleNeedClick}
+            onTrashClick={handleTrashClick}
+          />
+          <NeedsList
+            title="Realized needs"
+            needs={prepareData(needs, false)}
+            active={false}
+            onNeedClick={handleNeedClick}
+          />
+        </>
+      )}
       <AddNeedInput onCheckClick={handleNeedAdd} />
     </div>
   );

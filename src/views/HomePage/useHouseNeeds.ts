@@ -1,16 +1,23 @@
+import { PostgrestError } from "@supabase/postgrest-js";
 import { HouseNeed } from "models/HouseNeed";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "supabase";
 
 export default function useHouseNeeds(): [
   needs: HouseNeed[],
-  handlers: typeof handlers
+  handlers: typeof handlers,
+  statuses: { isLoading: boolean; error: PostgrestError | null }
 ] {
   const [needs, setNeeds] = useState<HouseNeed[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<PostgrestError | null>(null);
 
   const fetchHouseNeeds = async () => {
-    const { data } = await supabase.from("home-needs").select("*");
-    setNeeds(data as HouseNeed[]);
+    setLoading(true);
+    const { data, error } = await supabase.from("home-needs").select("*");
+    if (!error) setNeeds(data as HouseNeed[]);
+    else setError(error);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -32,5 +39,5 @@ export default function useHouseNeeds(): [
     [needs]
   );
 
-  return [needs, handlers];
+  return [needs, handlers, { isLoading, error }];
 }

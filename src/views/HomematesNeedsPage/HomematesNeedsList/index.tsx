@@ -1,8 +1,11 @@
+import { PostgrestError } from "@supabase/postgrest-js";
 import { UserNeed } from "models/UserNeed";
 import UserDropdown from "./UserDropdown";
 
 type Props = {
   usersNeeds: UserNeed[];
+  isLoading: boolean;
+  error: PostgrestError | null;
 };
 
 export type UserNeedPrepared = {
@@ -12,7 +15,7 @@ export type UserNeedPrepared = {
 };
 
 export default function HomematesNeedsList(props: Props): JSX.Element {
-  const { usersNeeds } = props;
+  const { usersNeeds, isLoading, error } = props;
 
   const prepareData = (usersNeeds: UserNeed[]): UserNeedPrepared[] => {
     const userNeedsPrepared: UserNeedPrepared[] = [];
@@ -49,13 +52,17 @@ export default function HomematesNeedsList(props: Props): JSX.Element {
 
   return (
     <div>
-      {userNeedsPrepared.length > 0 ? (
+      {isLoading && userNeedsPrepared.length === 0 && (
+        <p className="loader">Loading...</p>
+      )}
+      {userNeedsPrepared.length > 0 && !isLoading ? (
         userNeedsPrepared.map((user) => (
           <UserDropdown user={user} key={user.id} />
         ))
       ) : (
         <p>No needs founded.</p>
       )}
+      {error && <p>{"Something went wrong :("}</p>}
     </div>
   );
 }
