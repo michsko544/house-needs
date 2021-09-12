@@ -6,7 +6,7 @@ import { ReactComponent as SettingsIcon } from "assets/settings.svg";
 import { ReactComponent as XIcon } from "assets/x.svg";
 import { ReactComponent as LogoutIcon } from "assets/log-out.svg";
 import { NavLink, useHistory, useLocation } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import classnames from "classnames";
 
 import styles from "./styles.module.scss";
@@ -15,13 +15,18 @@ import { useSelector, useDispatch } from "react-redux";
 import useOutsideClick from "hooks/useOutsideClick";
 import { supabase } from "supabase";
 import { logout } from "store/auth";
+import NeedsList from "components/NeedsList";
+import { UserNeed } from "models/UserNeed";
+import { Need } from "models/Need";
 
 export default function Navbar(): JSX.Element {
   const dispatch = useDispatch();
   const history = useHistory();
   const isLoggedin = useSelector((state: RootState) => state.auth.isLoggedin);
+  const user = supabase.auth.user();
   const [line, setLine] = useState(styles.line1);
   const [isOpen, setOpen] = useState(false);
+  const [userNeeds, setUserNeeds] = useState<UserNeed[] | null>(null);
   const settingsRef = useRef(null);
   const settingsBgRef = useRef(null);
 
@@ -57,6 +62,39 @@ export default function Navbar(): JSX.Element {
         setLine("");
     }
   }, [location]);
+
+  const getUserNeeds = useCallback(
+    async (userId: string) => {
+      let { data, error } = await supabase
+        .from("user-needs")
+        .select(
+          `
+        id,
+        need,
+        created_at,
+        user: profiles (
+          first_name,
+          id
+        )
+      `
+        )
+        .eq("user_id", userId);
+      if (!error) setUserNeeds(data as UserNeed[]);
+    },
+    [setUserNeeds]
+  );
+
+  useEffect(() => {
+    if (user && user.id) {
+      getUserNeeds(user.id);
+    }
+  }, [user, getUserNeeds]);
+
+  const prepareData = (needs: UserNeed[], active: boolean): Need[] =>
+    needs.reduce((acc: Need[], elem: UserNeed): Need[] => {
+      if (true === active) acc.push({ need: elem.need, id: elem.id });
+      return acc;
+    }, []);
 
   return (
     <>
@@ -109,6 +147,14 @@ export default function Navbar(): JSX.Element {
               <LogoutIcon />
               <span>Logout</span>
             </div>
+
+            <NeedsList
+              title="Your needs"
+              needs={prepareData(userNeeds || [], true)}
+              onNeedClick={() => {}}
+              onTrashClick={() => {}}
+              labelAlign="right"
+            />
           </div>
         </div>
       </div>

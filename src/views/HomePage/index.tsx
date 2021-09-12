@@ -1,8 +1,9 @@
 import { HouseNeed } from "models/HouseNeed";
 import { supabase } from "supabase";
-import NeedsList from "./NeedsList";
+import NeedsList from "components/NeedsList";
 import AddNeedInput from "./AddNeedInput";
 import useHouseNeeds from "./useHouseNeeds";
+import { Need } from "models/Need";
 
 export default function HomePage(): JSX.Element {
   const [needs, { addNeed, updateNeed, deleteNeed }] = useHouseNeeds();
@@ -30,8 +31,9 @@ export default function HomePage(): JSX.Element {
     }
   };
 
-  const handleNeedClick = (need: HouseNeed) => {
-    updateHouseNeedActivity(need.id, !need.active);
+  const handleNeedClick = (need: Need) => {
+    const found = needs.find((elem) => elem.id === need.id);
+    if (found !== undefined) updateHouseNeedActivity(found.id, !found.active);
   };
 
   const handleNeedAdd = (text: string) => {
@@ -42,17 +44,23 @@ export default function HomePage(): JSX.Element {
     deleteHouseNeed(id);
   };
 
+  const prepareData = (needs: HouseNeed[], active: boolean): Need[] =>
+    needs.reduce((acc: Need[], elem: HouseNeed): Need[] => {
+      if (elem.active === active) acc.push({ need: elem.name, id: elem.id });
+      return acc;
+    }, []);
+
   return (
     <div className="contentContainer" style={{ paddingBottom: 82 }}>
       <NeedsList
         title="Top needs"
-        needs={needs}
+        needs={prepareData(needs, true)}
         onNeedClick={handleNeedClick}
         onTrashClick={handleTrashClick}
       />
       <NeedsList
         title="Realized needs"
-        needs={needs}
+        needs={prepareData(needs, false)}
         active={false}
         onNeedClick={handleNeedClick}
       />
