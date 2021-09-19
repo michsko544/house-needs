@@ -6,6 +6,7 @@ type Props = {
   usersNeeds: UserNeed[];
   isLoading: boolean;
   error: PostgrestError | null;
+  isUninitialized: boolean;
 };
 
 export type UserNeedPrepared = {
@@ -15,7 +16,7 @@ export type UserNeedPrepared = {
 };
 
 export default function HomematesNeedsList(props: Props): JSX.Element {
-  const { usersNeeds, isLoading, error } = props;
+  const { usersNeeds, isLoading, error, isUninitialized } = props;
 
   const prepareData = (usersNeeds: UserNeed[]): UserNeedPrepared[] => {
     const userNeedsPrepared: UserNeedPrepared[] = [];
@@ -52,17 +53,17 @@ export default function HomematesNeedsList(props: Props): JSX.Element {
 
   return (
     <div>
-      {isLoading && userNeedsPrepared.length === 0 && (
-        <p className="loader">Loading...</p>
-      )}
-      {userNeedsPrepared.length > 0 && !isLoading ? (
+      {userNeedsPrepared.length > 0 ? (
         userNeedsPrepared.map((user) => (
           <UserDropdown user={user} key={user.id} />
         ))
+      ) : isLoading ? (
+        <p className="loader">Loading...</p>
+      ) : error ? (
+        <p>{"Something went wrong :("}</p>
       ) : (
-        <p>No needs founded.</p>
+        !isUninitialized && <p>No needs founded.</p>
       )}
-      {error && <p>{"Something went wrong :("}</p>}
     </div>
   );
 }

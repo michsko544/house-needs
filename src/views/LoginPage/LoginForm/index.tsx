@@ -41,6 +41,10 @@ export default function LoginForm(): JSX.Element {
       dispatch(setHouse({ id: house.house_id, name: "" }));
       history.replace("/");
     }
+
+    if (error) {
+      formik.setStatus({ error: "Bad email or password." });
+    }
   };
 
   const handleChange = (e: React.ChangeEvent): void => {
@@ -78,8 +82,13 @@ export default function LoginForm(): JSX.Element {
           disabled={formik.isSubmitting}
           error={(formik.touched.password && formik.errors.password) || ""}
         />
+        {formik.status?.error && (
+          <b style={{ marginTop: 4, display: "block" }}>
+            {formik.status.error.toString()}
+          </b>
+        )}
         <Button type="submit" disabled={formik.isSubmitting}>
-          Sign in
+          {formik.isSubmitting ? "Loading..." : "Sign in"}
         </Button>
       </form>
       <Link to="/register" className={styles.registerLink}>

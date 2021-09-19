@@ -12,7 +12,9 @@ export default function HomematesNeedsPage(): JSX.Element {
   );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_handlers, { isLoading, error }] = useUserNeeds(house?.id || "");
+  const [_handlers, { isLoading, error, isUninitialized }] = useUserNeeds(
+    house?.id || ""
+  );
 
   return (
     <div className="contentContainer">
@@ -26,6 +28,7 @@ export default function HomematesNeedsPage(): JSX.Element {
         <HomematesNeedsList
           usersNeeds={userNeeds}
           isLoading={isLoading}
+          isUninitialized={isUninitialized}
           error={error}
         />
       </ContentWithLabel>

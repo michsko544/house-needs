@@ -10,17 +10,23 @@ export default function useUserNeeds(
   houseId: string
 ): [
   handlers: typeof handlers,
-  statuses: { isLoading: boolean; error: PostgrestError | null },
+  statuses: {
+    isLoading: boolean;
+    error: PostgrestError | null;
+    isUninitialized: boolean;
+  },
   refetch: typeof fetchUserNeeds
 ] {
   const needs = useSelector((state: RootState) => state.userNeeds.userNeeds);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [isUninitialized, setInitialized] = useState<boolean>(true);
   const [error, setError] = useState<PostgrestError | null>(null);
   const dispatch = useDispatch();
 
   const fetchUserNeeds = useCallback(
     async (houseId: string) => {
       setLoading(true);
+      setInitialized(true);
       let { data, error } = await supabase
         .from("user-needs")
         .select(
@@ -45,7 +51,6 @@ export default function useUserNeeds(
   );
 
   useEffect(() => {
-    console.log(houseId);
     if (houseId !== "") fetchUserNeeds(houseId);
   }, [houseId, fetchUserNeeds]);
 
@@ -58,5 +63,5 @@ export default function useUserNeeds(
     [dispatch, needs]
   );
 
-  return [handlers, { isLoading, error }, fetchUserNeeds];
+  return [handlers, { isLoading, error, isUninitialized }, fetchUserNeeds];
 }

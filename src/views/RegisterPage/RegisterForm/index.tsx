@@ -68,6 +68,10 @@ export default function RegisterForm({ house }: Props): JSX.Element {
       formik.setStatus({ error: "Error while saving profile." });
     }
 
+    if (signUpError) {
+      formik.setStatus({ error: "Something went wrong." });
+    }
+
     const error = houseError || signUpError || profileError;
 
     if (!error) formik.resetForm();
@@ -151,7 +155,7 @@ export default function RegisterForm({ house }: Props): JSX.Element {
           </b>
         )}
         <Button type="submit" disabled={formik.isSubmitting}>
-          Sign up
+          {formik.isSubmitting ? "Loading..." : "Sign up"}
         </Button>
       </form>
       <Link to="/login" className={styles.loginLink}>
