@@ -44,7 +44,8 @@ export default function HomePage(): JSX.Element {
   };
 
   const handleNeedAdd = (text: string) => {
-    addHouseNeed({ name: text, active: true });
+    if (house && house.id)
+      addHouseNeed({ name: text, active: true, house_id: house.id });
   };
 
   const handleTrashClick = (id: string) => {
@@ -62,7 +63,7 @@ export default function HomePage(): JSX.Element {
       {needs.length > 0 ? (
         <>
           <NeedsList
-            title="Top needs"
+            title="Current needs"
             needs={prepareData(needs, true)}
             onNeedClick={handleNeedClick}
             onTrashClick={handleTrashClick}
@@ -79,7 +80,7 @@ export default function HomePage(): JSX.Element {
       ) : error ? (
         <p>{"Something went wrong :("}</p>
       ) : (
-        !isUninitialized && <p>No needs founded.</p>
+        !isUninitialized && <p className="loader">No needs founded.</p>
       )}
       <AddNeedInput onCheckClick={handleNeedAdd} />
     </div>

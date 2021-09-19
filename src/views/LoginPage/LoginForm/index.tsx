@@ -32,18 +32,18 @@ export default function LoginForm(): JSX.Element {
     let { user, error } = await supabase.auth.signIn(values);
     let { data: house, error: profileError } = await supabase
       .from("profiles")
-      .select("house_id")
+      .select("last_selected_house")
       .eq("id", user?.id)
       .single();
     if (!error && !profileError && user) {
       formik.resetForm();
       dispatch(login(user));
-      dispatch(setHouse({ id: house.house_id, name: "" }));
+      dispatch(setHouse({ id: house.last_selected_house, name: "" }));
       history.replace("/");
     }
 
     if (error) {
-      formik.setStatus({ error: "Bad email or password." });
+      formik.setStatus({ error: error.message });
     }
   };
 

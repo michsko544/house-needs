@@ -1,7 +1,7 @@
 import { ReactComponent as HomeIcon } from "assets/home.svg";
 import { ReactComponent as UserIcon } from "assets/user.svg";
 import { ReactComponent as UserPlusIcon } from "assets/user-plus.svg";
-import { ReactComponent as MessageIcon } from "assets/message-square.svg";
+import { ReactComponent as UsersIcon } from "assets/users.svg";
 import { ReactComponent as SettingsIcon } from "assets/settings.svg";
 import { ReactComponent as XIcon } from "assets/x.svg";
 import { ReactComponent as LogoutIcon } from "assets/log-out.svg";
@@ -16,8 +16,7 @@ import useOutsideClick from "hooks/useOutsideClick";
 import { supabase } from "supabase";
 import { logout } from "store/auth";
 import NeedsList from "components/NeedsList";
-import { UserNeed, UserNeedEdit } from "models/UserNeed";
-import { Need } from "models/Need";
+import { UserNeedEdit } from "models/UserNeed";
 import useUserNeeds from "hooks/useUserNeeds";
 import AddNeedInput from "components/AddNeedInput";
 
@@ -29,18 +28,17 @@ export default function Navbar(): JSX.Element {
     (state: RootState) => state.userNeeds.userNeeds
   );
   const isLoggedin = useSelector((state: RootState) => state.auth.isLoggedin);
-  const house = useSelector((state: RootState) => state.auth.house);
   const [line, setLine] = useState(styles.line1);
   const [isOpen, setOpen] = useState(false);
   const settingsRef = useRef(null);
   const settingsBgRef = useRef(null);
   const [{ deleteNeed }, { isLoading, error }, refetch] = useUserNeeds(
-    house?.id || ""
+    user?.id || ""
   );
 
   const addUserNeed = async (need: UserNeedEdit) => {
     await supabase.from("user-needs").insert([need]).single();
-    refetch(house?.id || "");
+    refetch(user?.id || "");
   };
 
   const deleteUserNeed = async (id: string) => {
@@ -72,7 +70,7 @@ export default function Navbar(): JSX.Element {
       case "/homemates-needs":
         setLine(styles.line2);
         break;
-      case "/messages":
+      case "/houses":
         setLine(styles.line3);
         break;
       case "/register":
@@ -86,19 +84,12 @@ export default function Navbar(): JSX.Element {
     }
   }, [location]);
 
-  const prepareData = (needs: UserNeed[]): Need[] =>
-    needs.reduce((acc: Need[], elem: UserNeed): Need[] => {
-      if (elem.user.id === user?.id) acc.push({ need: elem.need, id: elem.id });
-      return acc;
-    }, []);
-
   const handleNeedAdd = (text: string) => {
-    if (user && house && typeof house.id === "string")
+    if (user)
       addUserNeed({
         need: text,
         active: true,
         user_id: user.id,
-        house_id: house.id,
       });
   };
 
@@ -120,9 +111,12 @@ export default function Navbar(): JSX.Element {
               <NavLink to="/homemates-needs">
                 <UserIcon />
               </NavLink>
-              <NavLink to="/messages">
-                <MessageIcon />
+              <NavLink to="/houses">
+                <UsersIcon />
               </NavLink>
+              {/* <NavLink to="/messages">
+                <MessageIcon />
+              </NavLink> */}
             </>
           ) : (
             <>
@@ -162,7 +156,7 @@ export default function Navbar(): JSX.Element {
               {userNeeds.length > 0 && !isLoading && (
                 <NeedsList
                   title="Your needs"
-                  needs={prepareData(userNeeds)}
+                  needs={userNeeds}
                   onNeedClick={() => {}}
                   onTrashClick={deleteUserNeed}
                   labelAlign="right"

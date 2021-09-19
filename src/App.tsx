@@ -8,6 +8,7 @@ import LoginPage from "views/LoginPage";
 import RegisterPage from "views/RegisterPage";
 import PrivateRoute from "components/PrivateRoute";
 import AppInit from "components/AppInit";
+import HousesPage from "views/HousesPage";
 
 function App() {
   return (
@@ -20,6 +21,9 @@ function App() {
         </PrivateRoute>
         <PrivateRoute path="/homemates-needs">
           <HomematesNeedsPage />
+        </PrivateRoute>
+        <PrivateRoute path="/houses">
+          <HousesPage />
         </PrivateRoute>
         <PublicRoute path="/login">
           <LoginPage />

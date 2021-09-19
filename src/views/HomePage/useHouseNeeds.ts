@@ -23,7 +23,7 @@ export default function useHouseNeeds(houseId: string): [
   const fetchHouseNeeds = useCallback(
     async (houseId: string) => {
       setLoading(true);
-      setInitialized(true);
+      setInitialized(false);
       const { data, error } = await supabase
         .from("home-needs")
         .select("*")

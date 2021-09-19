@@ -22,10 +22,11 @@ export default function AppInit(): null {
     async (userId: string) => {
       let { data: house, error } = await supabase
         .from("profiles")
-        .select("house_id")
+        .select("last_selected_house")
         .eq("id", userId)
         .single();
-      if (!error) dispatch(setHouse({ id: house.house_id, name: "" }));
+      if (!error)
+        dispatch(setHouse({ id: house.last_selected_house, name: "" }));
     },
     [dispatch]
   );

@@ -1,0 +1,34 @@
+@import "~styles/_variables";
+
+.list {
+  li {
+    width: 100%;
+    background-color: $gray-color;
+    height: 58px;
+    margin-bottom: 12px;
+
+    .normalElement {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    span {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      padding-left: 16px;
+      padding-right: 16px;
+      align-items: center;
+      overflow: auto;
+      white-space: nowrap;
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+      margin-right: 16px;
+    }
+  }
+}

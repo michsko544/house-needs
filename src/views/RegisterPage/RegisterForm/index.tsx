@@ -46,7 +46,8 @@ export default function RegisterForm({ house }: Props): JSX.Element {
 
     let signUpError = null,
       user = null,
-      profileError = null;
+      profileError = null,
+      setHouseError = null;
     if (!houseError) {
       ({ user, error: signUpError } = await supabase.auth.signUp({
         email: values.email,
@@ -57,22 +58,37 @@ export default function RegisterForm({ house }: Props): JSX.Element {
     }
 
     if (!signUpError && user) {
-      ({ error: profileError } = await supabase
-        .from("profiles")
-        .insert([
-          { id: user.id, house_id: house.id, first_name: values.firstName },
-        ]));
+      ({ error: profileError } = await supabase.from("profiles").insert([
+        {
+          id: user.id,
+          last_selected_house: house.id,
+          first_name: values.firstName,
+        },
+      ]));
+    }
+
+    if (user && !houseError && !signUpError) {
+      ({ error: setHouseError } = await supabase.from("profile_house").insert([
+        {
+          profile_id: user.id,
+          house_id: house.id,
+        },
+      ]));
     }
 
     if (profileError) {
       formik.setStatus({ error: "Error while saving profile." });
     }
 
+    if (setHouseError) {
+      formik.setStatus({ error: "Error while connecting user with house." });
+    }
+
     if (signUpError) {
       formik.setStatus({ error: "Something went wrong." });
     }
 
-    const error = houseError || signUpError || profileError;
+    const error = houseError || signUpError || profileError || setHouseError;
 
     if (!error) formik.resetForm();
   };

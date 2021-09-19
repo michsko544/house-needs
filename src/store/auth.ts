@@ -1,10 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "@supabase/supabase-js";
+import { House } from "models/House";
 
-interface House {
-  id: string;
-  name: string;
-}
 export interface AuthState {
   isLoggedin: boolean;
   me: User | null;

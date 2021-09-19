@@ -1,18 +1,18 @@
 import styles from "./styles.module.scss";
 import { supabase } from "supabase";
-import { UserNeedPrepared } from "..";
 import { ReactComponent as UserIcon } from "assets/user.svg";
 import { ReactComponent as ChevronDownIcon } from "assets/chevron-down.svg";
 import { useState } from "react";
 import classnames from "classnames";
+import { ProfilesNeed } from "models/ProfilesNeed";
 
 interface Props {
-  user: UserNeedPrepared;
+  user: ProfilesNeed;
 }
 
 export default function UserDropdown(props: Props): JSX.Element {
   const { user } = props;
-  const { firstName, needs, id } = user;
+  const { firstName, userNeeds, id } = user;
   const supabaseUser = supabase.auth.user();
 
   const [isOpen, setOpen] = useState(supabaseUser?.id === id ? false : true);
@@ -37,7 +37,7 @@ export default function UserDropdown(props: Props): JSX.Element {
           <ChevronDownIcon className={styles.chevron} />
         </div>
         <ul>
-          {needs
+          {[...userNeeds]
             .sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1))
             .map((need) => (
               <li key={need.id}>{need.need}</li>
