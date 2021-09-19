@@ -1,5 +1,6 @@
 import { PostgrestError } from "@supabase/postgrest-js";
 import { UserNeed } from "models/UserNeed";
+import { supabase } from "supabase";
 import UserDropdown from "./UserDropdown";
 
 type Props = {
@@ -17,6 +18,7 @@ export type UserNeedPrepared = {
 
 export default function HomematesNeedsList(props: Props): JSX.Element {
   const { usersNeeds, isLoading, error, isUninitialized } = props;
+  const supabaseUser = supabase.auth.user();
 
   const prepareData = (usersNeeds: UserNeed[]): UserNeedPrepared[] => {
     const userNeedsPrepared: UserNeedPrepared[] = [];
@@ -33,7 +35,7 @@ export default function HomematesNeedsList(props: Props): JSX.Element {
           createdAt: userNeed.created_at,
         });
       } else {
-        userNeedsPrepared.push({
+        const need: UserNeedPrepared = {
           id: userNeed.user.id,
           firstName: userNeed.user.first_name,
           needs: [
@@ -43,7 +45,13 @@ export default function HomematesNeedsList(props: Props): JSX.Element {
               createdAt: userNeed.created_at,
             },
           ],
-        });
+        };
+
+        if (supabaseUser?.id === userNeed.user.id) {
+          userNeedsPrepared.unshift(need);
+        } else {
+          userNeedsPrepared.push(need);
+        }
       }
     });
 

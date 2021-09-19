@@ -1,43 +1,60 @@
 import { PostgrestError } from "@supabase/postgrest-js";
 import { HouseNeed } from "models/HouseNeed";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "store";
+import { setHouseNeeds } from "store/houseNeeds";
 import { supabase } from "supabase";
 
-export default function useHouseNeeds(): [
-  needs: HouseNeed[],
+export default function useHouseNeeds(houseId: string): [
   handlers: typeof handlers,
-  statuses: { isLoading: boolean; error: PostgrestError | null }
+  statuses: {
+    isLoading: boolean;
+    error: PostgrestError | null;
+    isUninitialized: boolean;
+  }
 ] {
-  const [needs, setNeeds] = useState<HouseNeed[]>([]);
+  const needs = useSelector((state: RootState) => state.houseNeeds.houseNeeds);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [isUninitialized, setInitialized] = useState<boolean>(true);
   const [error, setError] = useState<PostgrestError | null>(null);
+  const dispatch = useDispatch();
 
-  const fetchHouseNeeds = async () => {
-    setLoading(true);
-    const { data, error } = await supabase.from("home-needs").select("*");
-    if (!error) setNeeds(data as HouseNeed[]);
-    else setError(error);
-    setLoading(false);
-  };
+  const fetchHouseNeeds = useCallback(
+    async (houseId: string) => {
+      setLoading(true);
+      setInitialized(true);
+      const { data, error } = await supabase
+        .from("home-needs")
+        .select("*")
+        .eq("house_id", houseId);
+      if (!error) dispatch(setHouseNeeds(data as HouseNeed[]));
+      else setError(error);
+      setLoading(false);
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
-    fetchHouseNeeds();
-  }, []);
+    if (houseId !== "") fetchHouseNeeds(houseId);
+  }, [houseId, fetchHouseNeeds]);
 
   const handlers = useMemo(
     () => ({
       addNeed: (newNeed: HouseNeed) => {
-        setNeeds([...needs, newNeed]);
+        dispatch(setHouseNeeds([...needs, newNeed]));
       },
       deleteNeed: (id: string) => {
-        setNeeds(needs.filter((elem) => elem.id !== id));
+        dispatch(setHouseNeeds(needs.filter((elem) => elem.id !== id)));
       },
       updateNeed: (need: HouseNeed) => {
-        setNeeds([...needs.filter((elem) => elem.id !== need.id), need]);
+        dispatch(
+          setHouseNeeds([...needs.filter((elem) => elem.id !== need.id), need])
+        );
       },
     }),
-    [needs]
+    [dispatch, needs]
   );
 
-  return [needs, handlers, { isLoading, error }];
+  return [handlers, { isLoading, error, isUninitialized }];
 }

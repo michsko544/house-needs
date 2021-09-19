@@ -154,19 +154,21 @@ export default function Navbar(): JSX.Element {
               <span>Logout</span>
             </div>
 
-            {error && <p>{"Something went wrong :("}</p>}
-            {isLoading && userNeeds.length === 0 && (
-              <p className="loader">Loading...</p>
-            )}
-            {userNeeds.length > 0 && !isLoading && (
-              <NeedsList
-                title="Your needs"
-                needs={prepareData(userNeeds)}
-                onNeedClick={() => {}}
-                onTrashClick={deleteUserNeed}
-                labelAlign="right"
-              />
-            )}
+            <div className={styles.userNeedsWrapper}>
+              {error && <p>{"Something went wrong :("}</p>}
+              {isLoading && userNeeds.length === 0 && (
+                <p className="loader">Loading...</p>
+              )}
+              {userNeeds.length > 0 && !isLoading && (
+                <NeedsList
+                  title="Your needs"
+                  needs={prepareData(userNeeds)}
+                  onNeedClick={() => {}}
+                  onTrashClick={deleteUserNeed}
+                  labelAlign="right"
+                />
+              )}
+            </div>
             <AddNeedInput onCheckClick={handleNeedAdd} />
           </div>
         </div>

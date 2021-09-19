@@ -15,7 +15,7 @@ export default function UserDropdown(props: Props): JSX.Element {
   const { firstName, needs, id } = user;
   const supabaseUser = supabase.auth.user();
 
-  const [isOpen, setOpen] = useState(true);
+  const [isOpen, setOpen] = useState(supabaseUser?.id === id ? false : true);
 
   const toggleOpen = (state: boolean) => setOpen(!state);
 

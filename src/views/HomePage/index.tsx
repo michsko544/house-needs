@@ -4,10 +4,16 @@ import NeedsList from "components/NeedsList";
 import AddNeedInput from "../../components/AddNeedInput";
 import useHouseNeeds from "./useHouseNeeds";
 import { Need } from "models/Need";
+import { RootState } from "store";
+import { useSelector } from "react-redux";
 
 export default function HomePage(): JSX.Element {
-  const [needs, { addNeed, updateNeed, deleteNeed }, { isLoading, error }] =
-    useHouseNeeds();
+  const needs = useSelector((state: RootState) => state.houseNeeds.houseNeeds);
+  const house = useSelector((state: RootState) => state.auth.house);
+  const [
+    { addNeed, updateNeed, deleteNeed },
+    { isLoading, error, isUninitialized },
+  ] = useHouseNeeds(house?.id || "");
 
   const addHouseNeed = async (need: Omit<HouseNeed, "id">) => {
     const { data } = await supabase.from("home-needs").insert([need]).single();
@@ -53,9 +59,7 @@ export default function HomePage(): JSX.Element {
 
   return (
     <div className="contentContainer" style={{ paddingBottom: 82 }}>
-      {isLoading && <p className="loader">Loading...</p>}
-      {error && <p>{"Something went wrong :("}</p>}
-      {needs.length > 0 && !isLoading && (
+      {needs.length > 0 ? (
         <>
           <NeedsList
             title="Top needs"
@@ -70,6 +74,12 @@ export default function HomePage(): JSX.Element {
             onNeedClick={handleNeedClick}
           />
         </>
+      ) : isLoading ? (
+        <p className="loader">Loading...</p>
+      ) : error ? (
+        <p>{"Something went wrong :("}</p>
+      ) : (
+        !isUninitialized && <p>No needs founded.</p>
       )}
       <AddNeedInput onCheckClick={handleNeedAdd} />
     </div>
