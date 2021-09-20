@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 
 type Props = {
   house: string;
+  onSuccess: () => void;
 };
 interface Register {
   email: string;
@@ -20,15 +21,19 @@ interface Register {
 
 const RegisterValidationSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
-  firstName: Yup.string().min(2).required("First name is required"),
-  house: Yup.string().min(2).required("House is required"),
+  firstName: Yup.string()
+    .min(2, "First name must have at least 2 characters")
+    .required("First name is required"),
+  house: Yup.string()
+    .min(2, "House must have at least 2 characters")
+    .required("House is required"),
   password: Yup.string().required("Password is required"),
   secondPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Second password is required"),
 });
 
-export default function RegisterForm({ house }: Props): JSX.Element {
+export default function RegisterForm({ house, onSuccess }: Props): JSX.Element {
   const initialValues: Register = {
     email: "",
     firstName: "",
@@ -90,7 +95,10 @@ export default function RegisterForm({ house }: Props): JSX.Element {
 
     const error = houseError || signUpError || profileError || setHouseError;
 
-    if (!error) formik.resetForm();
+    if (!error) {
+      formik.resetForm();
+      onSuccess();
+    }
   };
 
   const handleChange = (e: React.ChangeEvent): void => {
@@ -133,9 +141,9 @@ export default function RegisterForm({ house }: Props): JSX.Element {
           id="house"
           type="text"
           label="Existing house"
-          placeholder="Doe"
+          placeholder="Broadway Penthouse"
           onChange={handleChange}
-          autoComplete="family-name"
+          autoComplete="off"
           value={formik.values.house}
           disabled={formik.isSubmitting}
           error={(formik.touched.house && formik.errors.house) || ""}

@@ -40,21 +40,21 @@ export default function HomematesNeedsPage(): JSX.Element {
           .eq("id", houseId)
           .single();
 
-        const profiles = data.profiles as ProfilesNeed[];
+        let profiles = data.profiles as ProfilesNeed[];
 
         const loggedUserProfile = profiles.find(
           (profile) => profile.id === user?.id
         );
-        const profilesNeedsToSet = profiles
-          .map((profile) => {
-            const needs = profile.userNeeds.filter(
-              (need) => need.active === true
-            );
-            const profileToSet: ProfilesNeed = { ...profile, userNeeds: needs };
-            return profileToSet;
-          })
-          .filter((profile) => profile.id !== user?.id);
-        if (loggedUserProfile) profilesNeedsToSet.unshift(loggedUserProfile);
+
+        profiles = profiles.filter((profile) => profile.id !== user?.id);
+        if (loggedUserProfile) profiles.unshift(loggedUserProfile);
+        const profilesNeedsToSet = profiles.map((profile) => {
+          const needs = profile.userNeeds.filter(
+            (need) => need.active === true
+          );
+          const profileToSet: ProfilesNeed = { ...profile, userNeeds: needs };
+          return profileToSet;
+        });
         if (!error) dispatch(setProfilesNeeds(profilesNeedsToSet));
         else setError(error);
         setLoading(false);
