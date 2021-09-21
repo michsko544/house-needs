@@ -1,0 +1,29 @@
+@import "~styles/variables";
+
+.popoverContainer {
+  width: 100%;
+  height: 100%;
+  background-color: rgba($black, 0.5);
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 1;
+}
+
+.popoverWrapper {
+  margin: 0;
+  position: fixed;
+  width: calc(100% - 48px);
+  height: calc(100% - 48px);
+  inset: 24px;
+  background-color: $white;
+
+  .popoverMask {
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+  }
+}

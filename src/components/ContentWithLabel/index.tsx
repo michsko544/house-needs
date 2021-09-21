@@ -6,17 +6,19 @@ type Props = {
   title: string;
   children: ReactChild;
   textAlign?: "left" | "right";
+  noTopMargin?: boolean;
 };
 
 export default function ContentWithLabel(props: Props): JSX.Element {
-  const { title, children, textAlign = "left" } = props;
+  const { title, children, textAlign = "left", noTopMargin = false } = props;
 
   return (
     <>
       <h2
         className={classnames(
           styles.label,
-          textAlign !== "left" && styles.alignRight
+          textAlign !== "left" && styles.alignRight,
+          noTopMargin && styles.noTopMargin
         )}
       >
         {title}

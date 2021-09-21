@@ -1,0 +1,18 @@
+@import "~styles/variables";
+
+.buttonsWrapper {
+  position: fixed;
+  bottom: 24px;
+  display: flex;
+  width: calc(100% - 48px);
+  gap: 24px;
+
+  button {
+    text-align: center;
+  }
+}
+
+.normalButton {
+  background: $gray-color;
+  color: $black;
+}

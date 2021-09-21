@@ -32,6 +32,7 @@ function App() {
           <RegisterPage />
         </PublicRoute>
       </Router>
+      <div id="body-portal"></div>
     </div>
   );
 }
