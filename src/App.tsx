@@ -9,6 +9,7 @@ import RegisterPage from "views/RegisterPage";
 import PrivateRoute from "components/PrivateRoute";
 import AppInit from "components/AppInit";
 import HousesPage from "views/HousesPage";
+import JoinPage from "views/JoinPage";
 
 function App() {
   return (
@@ -30,6 +31,9 @@ function App() {
         </PublicRoute>
         <PublicRoute path="/register">
           <RegisterPage />
+        </PublicRoute>
+        <PublicRoute path="/join/:id">
+          <JoinPage />
         </PublicRoute>
       </Router>
       <div id="body-portal"></div>

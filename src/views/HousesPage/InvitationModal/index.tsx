@@ -5,7 +5,13 @@ import styles from "./styles.module.scss";
 import { ReactComponent as XIcon } from "assets/x.svg";
 import Button from "components/Button";
 import { useFormik } from "formik";
-import InputText from "components/InputText";
+import { useState } from "react";
+import { supabase } from "supabase";
+import Select from "components/Select";
+import { RootState } from "store";
+import { useSelector } from "react-redux";
+import { SelectOption } from "models/SelectOption";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 type Props = {
   handleClose: () => void;
@@ -13,34 +19,39 @@ type Props = {
 };
 
 type Invitation = {
-  email: string;
   house: string;
-  invitationText: string;
 };
 
 const InvitationValidationSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Email is required"),
   house: Yup.string()
     .min(2, "House must have at least 2 characters")
     .required("House is required"),
-  invitationText: Yup.string()
-    .min(2, "Invitation must have at least 2 characters")
-    .required("Invitation is required"),
 });
 
 export default function InvitationModal(props: Props): JSX.Element {
   const { handleClose, isVisible } = props;
 
+  const [inviteLink, setInviteLink] = useState("");
+
+  const houses = useSelector((state: RootState) => state.houses.houses);
+
   const initialValues: Invitation = {
-    email: "",
     house: "",
-    invitationText: "",
   };
 
-  const handleSubmit = async (_values: Invitation): Promise<void> => {};
+  const handleSubmit = async (values: Invitation): Promise<void> => {
+    const { data, error } = await supabase
+      .from("invitations")
+      .insert([{ house_id: values.house }])
+      .single();
 
-  const handleChange = (e: React.ChangeEvent): void => {
-    formik.handleChange(e);
+    if (!error) {
+      setInviteLink(`${window.location.origin}/join/${data.id}`);
+    }
+  };
+
+  const handleSelectChange = (selectedOption: SelectOption | null): void => {
+    formik.setFieldValue("house", selectedOption?.value);
   };
 
   const formik = useFormik<Invitation>({
@@ -50,63 +61,56 @@ export default function InvitationModal(props: Props): JSX.Element {
     enableReinitialize: true,
   });
 
+  const handleCloseInviteModal = () => {
+    setInviteLink("");
+    handleClose();
+  };
+
   return (
-    <Modal isVisible={isVisible} handleClose={handleClose}>
-      <ContentWithLabel title="Send invite" noTopMargin={true}>
+    <Modal isVisible={isVisible} handleClose={handleCloseInviteModal}>
+      <ContentWithLabel title="Create invite" noTopMargin={true}>
         <>
-          <div className={styles.close} onClick={handleClose}>
+          <div className={styles.close} onClick={handleCloseInviteModal}>
             <XIcon />
           </div>
-          <form
-            onSubmit={formik.handleSubmit}
-            noValidate
-            className={styles.formClass}
-          >
-            <InputText
-              id="house"
-              type="text"
-              label="Existing house"
-              placeholder="Broadway Penthouse"
-              onChange={handleChange}
-              autoComplete="off"
-              value={formik.values.house}
-              disabled={formik.isSubmitting}
-              error={(formik.touched.house && formik.errors.house) || ""}
-            />
-            <InputText
-              id="email"
-              type="email"
-              label="E-mail"
-              placeholder="jam@jam.com"
-              onChange={handleChange}
-              autoComplete="off"
-              value={formik.values.email}
-              disabled={formik.isSubmitting}
-              error={(formik.touched.email && formik.errors.email) || ""}
-            />
-            <InputText
-              id="invitationText"
-              type="text"
-              label="Invitation"
-              placeholder="Invitation text"
-              onChange={handleChange}
-              autoComplete="off"
-              value={formik.values.invitationText}
-              disabled={formik.isSubmitting}
-              error={
-                (formik.touched.invitationText &&
-                  formik.errors.invitationText) ||
-                ""
-              }
-            />
-            <Button
-              className={styles.alignBottom}
-              type="submit"
-              disabled={formik.isSubmitting}
+          {inviteLink === "" ? (
+            <form
+              onSubmit={formik.handleSubmit}
+              noValidate
+              className={styles.formClass}
             >
-              {formik.isSubmitting ? "Loading..." : "Send invitation"}
-            </Button>
-          </form>
+              <Select
+                label={"Existing house"}
+                id="house"
+                options={houses.map((house) => ({
+                  label: house.name,
+                  value: house.id,
+                }))}
+                onChange={handleSelectChange}
+              />
+
+              <Button
+                className={styles.alignBottom}
+                type="submit"
+                disabled={formik.isSubmitting}
+              >
+                {formik.isSubmitting ? "Loading..." : "Generate link"}
+              </Button>
+            </form>
+          ) : (
+            <div className={styles.successLink}>
+              <p>
+                You have successfully create invitation link! Copy link and send
+                your friends.
+              </p>
+              <b>{inviteLink}</b>
+              <CopyToClipboard text={inviteLink}>
+                <Button className={styles.alignBottom} type="button">
+                  Copy link
+                </Button>
+              </CopyToClipboard>
+            </div>
+          )}
         </>
       </ContentWithLabel>
     </Modal>

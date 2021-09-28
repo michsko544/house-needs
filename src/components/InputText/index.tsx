@@ -8,6 +8,7 @@ type Props = {
   value: string;
   placeholder?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
   disabled?: boolean;
   autoComplete?: string;
   restProps?: unknown[];
@@ -22,6 +23,7 @@ export default function InputText(props: Props): JSX.Element {
     label,
     placeholder = "",
     onChange,
+    onBlur,
     autoComplete,
     disabled = false,
     ...restProps
@@ -36,6 +38,7 @@ export default function InputText(props: Props): JSX.Element {
         {...restProps}
         autoComplete={autoComplete}
         onChange={onChange}
+        onBlur={onBlur}
         value={value}
         disabled={disabled}
         placeholder={placeholder}

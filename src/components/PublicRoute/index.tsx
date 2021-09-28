@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 import { Route, RouteProps } from "react-router-dom";
 
 const PublicRoute = ({ children, ...rest }: RouteProps): ReactElement => {

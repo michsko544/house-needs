@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+import qs from "query-string";
 import { useFormik } from "formik";
 import InputText from "components/InputText";
 
@@ -23,6 +24,8 @@ export default function LoginForm(): JSX.Element {
   const dispatch = useDispatch();
   const history = useHistory();
 
+  const parsed = qs.parse(window.location.search);
+
   const initialValues: LogIn = {
     email: "",
     password: "",
@@ -39,7 +42,11 @@ export default function LoginForm(): JSX.Element {
       formik.resetForm();
       dispatch(login(user));
       dispatch(setHouse({ id: house.last_selected_house, name: "" }));
-      history.replace("/");
+      if (parsed.target) {
+        history.replace(parsed.target as string);
+      } else {
+        history.replace("/");
+      }
     }
 
     if (error) {

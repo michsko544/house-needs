@@ -58,7 +58,7 @@ export default function Navbar(): JSX.Element {
     let { error } = await supabase.auth.signOut();
     dispatch(logout());
     toggleOpen(isOpen);
-    if (!error) history.push("/");
+    if (!error) history.push("/login");
   };
 
   let location = useLocation();

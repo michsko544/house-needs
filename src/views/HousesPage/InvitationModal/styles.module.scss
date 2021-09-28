@@ -13,3 +13,18 @@
   display: flex;
   flex-direction: column;
 }
+
+.successLink {
+  margin-top: 12px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  p {
+    margin-bottom: 12px;
+  }
+}
+
+.copyBtn {
+  margin-top: 12px;
+}

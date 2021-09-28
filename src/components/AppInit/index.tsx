@@ -14,7 +14,6 @@ export default function AppInit(): null {
   useEffect(() => {
     if (user !== null && user.role === "authenticated") {
       dispatch(login(user));
-      history.replace("/");
     }
   }, [dispatch, history, user]);
 

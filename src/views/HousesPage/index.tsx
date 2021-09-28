@@ -65,7 +65,7 @@ export default function HousesPage(): JSX.Element {
           className={styles.normalButton}
           onClick={() => setInvModalOpen(true)}
         >
-          Send invitations
+          Create invite
         </Button>
         <Button onClick={() => setAddModalOpen(true)}>Add new house</Button>
       </div>
