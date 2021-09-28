@@ -1,4 +1,3 @@
-import "./App.scss";
 import { BrowserRouter as Router } from "react-router-dom";
 import PublicRoute from "./components/PublicRoute";
 import HomePage from "./views/HomePage";

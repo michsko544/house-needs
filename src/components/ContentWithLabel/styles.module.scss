@@ -1,5 +1,8 @@
+@import "~styles/mixins";
 .label {
   margin: 24px 0 16px;
+  @include font-size-20;
+  font-weight: bold;
 }
 
 .alignRight {

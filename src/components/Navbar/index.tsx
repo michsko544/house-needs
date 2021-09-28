@@ -8,6 +8,7 @@ import { ReactComponent as LogoutIcon } from "assets/log-out.svg";
 import { NavLink, useHistory, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import classnames from "classnames";
+import { UserNeed } from "models/UserNeed";
 
 import styles from "./styles.module.scss";
 import { RootState } from "store";
@@ -19,6 +20,7 @@ import NeedsList from "components/NeedsList";
 import { UserNeedEdit } from "models/UserNeed";
 import useUserNeeds from "hooks/useUserNeeds";
 import AddNeedInput from "components/AddNeedInput";
+import { updateProfileNeeds } from "store/profilesNeeds";
 
 export default function Navbar(): JSX.Element {
   const dispatch = useDispatch();
@@ -26,6 +28,9 @@ export default function Navbar(): JSX.Element {
   const user = supabase.auth.user();
   const userNeeds = useSelector(
     (state: RootState) => state.userNeeds.userNeeds
+  );
+  const profilesNeeds = useSelector(
+    (state: RootState) => state.profilesNeeds.profilesNeeds
   );
   const isLoggedin = useSelector((state: RootState) => state.auth.isLoggedin);
   const [line, setLine] = useState(styles.line1);
@@ -37,8 +42,19 @@ export default function Navbar(): JSX.Element {
   );
 
   const addUserNeed = async (need: UserNeedEdit) => {
-    await supabase.from("user-needs").insert([need]).single();
+    const { data: newNeed } = await supabase
+      .from("user-needs")
+      .insert([need])
+      .single();
     refetch(user?.id || "");
+    const found = profilesNeeds.find(
+      (profileNeeds) => profileNeeds.id === user?.id
+    );
+    if (found) {
+      const needsToSet = [...found.userNeeds];
+      needsToSet.push(newNeed as UserNeed);
+      dispatch(updateProfileNeeds({ ...found, userNeeds: needsToSet }));
+    }
   };
 
   const deleteUserNeed = async (id: string) => {
