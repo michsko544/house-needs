@@ -36,7 +36,6 @@ function App() {
           <JoinPage />
         </PublicRoute>
       </Router>
-      <div id="body-portal"></div>
     </div>
   );
 }
