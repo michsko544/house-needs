@@ -1,3 +1,4 @@
+import qs from "query-string";
 import ContentWithLabel from "components/ContentWithLabel";
 import { useHistory, useLocation } from "react-router";
 import { useEffect, useState } from "react";
@@ -33,7 +34,11 @@ export default function JoinPage(): JSX.Element {
     setLoading(true);
     setUninitialized(false);
     if (!user) {
-      history.push(`/login?target=${location.pathname}`);
+      history.push(
+        `/login?target=${encodeURIComponent(location.pathname)}&house=${
+          qs.parse(window.location.search)["house"]
+        }`
+      );
     } else {
       let { data: invitation, error } = await supabase
         .from("invitations")

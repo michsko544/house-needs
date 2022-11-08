@@ -17,7 +17,6 @@ export type UserNeedPrepared = {
 
 export default function HomematesNeedsList(props: Props): JSX.Element {
   const { profilesNeeds, isLoading, error, isUninitialized } = props;
-  console.log(profilesNeeds);
   return (
     <div>
       {profilesNeeds.length > 0 ? (

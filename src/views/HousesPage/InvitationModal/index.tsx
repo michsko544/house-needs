@@ -46,7 +46,12 @@ export default function InvitationModal(props: Props): JSX.Element {
       .single();
 
     if (!error) {
-      setInviteLink(`${window.location.origin}/join/${data.id}`);
+      setInviteLink(
+        `${window.location.origin}/join/${data.id}?house=${encodeURIComponent(
+          houses.find((house) => house.id === formik.values["house"])?.name ||
+            ""
+        )}`
+      );
     }
   };
 
@@ -92,7 +97,7 @@ export default function InvitationModal(props: Props): JSX.Element {
               <Button
                 className={styles.alignBottom}
                 type="submit"
-                disabled={formik.isSubmitting}
+                disabled={formik.isSubmitting || formik.values["house"] === ""}
               >
                 {formik.isSubmitting ? "Loading..." : "Generate link"}
               </Button>

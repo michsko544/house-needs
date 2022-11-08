@@ -1,3 +1,4 @@
+import qs from "query-string";
 import { ReactComponent as HomeIcon } from "assets/home.svg";
 import { ReactComponent as UserIcon } from "assets/user.svg";
 import { ReactComponent as UserPlusIcon } from "assets/user-plus.svg";
@@ -21,8 +22,12 @@ import { UserNeedEdit } from "models/UserNeed";
 import useUserNeeds from "hooks/useUserNeeds";
 import AddNeedInput from "components/AddNeedInput";
 import { updateProfileNeeds } from "store/profilesNeeds";
+import useSearchParams from "hooks/useSearchParams";
 
 export default function Navbar(): JSX.Element {
+  const allowedSearchParams = useSearchParams();
+  const hasSearchParams = Object.keys(allowedSearchParams).length > 0;
+
   const dispatch = useDispatch();
   const history = useHistory();
   const user = supabase.auth.user();
@@ -136,10 +141,18 @@ export default function Navbar(): JSX.Element {
             </>
           ) : (
             <>
-              <NavLink to="/login">
+              <NavLink
+                to={`/login${
+                  hasSearchParams ? "?" + qs.stringify(allowedSearchParams) : ""
+                }`}
+              >
                 <HomeIcon />
               </NavLink>
-              <NavLink to="/register">
+              <NavLink
+                to={`/register${
+                  hasSearchParams ? "?" + qs.stringify(allowedSearchParams) : ""
+                }`}
+              >
                 <UserPlusIcon />
               </NavLink>
             </>
