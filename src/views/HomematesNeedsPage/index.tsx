@@ -33,7 +33,12 @@ export default function HomematesNeedsPage(): JSX.Element {
             `profiles (
             id, firstName:first_name,
             userNeeds: user-needs!user-needs_user_id_fkey (
-              id, need, createdAt:created_at, active
+              id,
+              need,
+              createdAt:created_at,
+              active,
+              needUrl: need_url,
+              sponsor: sponsor_id(id, firstName:first_name)
             )
           )`
           )

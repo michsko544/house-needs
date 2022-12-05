@@ -6,7 +6,7 @@ import { RootState } from "store";
 import { setUserNeeds } from "store/userNeeds";
 import { supabase } from "supabase";
 
-export default function useUserNeeds(houseId: string): [
+export default function useUserNeeds(userId: string): [
   handlers: typeof handlers,
   statuses: {
     isLoading: boolean;
@@ -32,7 +32,12 @@ export default function useUserNeeds(houseId: string): [
         .from("profiles")
         .select(
           `userNeeds: user-needs!user-needs_user_id_fkey (
-              id, need, createdAt:created_at, active
+              id,
+              need,
+              createdAt:created_at,
+              active,
+              needUrl: need_url,
+              sponsor: sponsor_id(id, firstName:first_name)
           )`
         )
         .eq("id", userId)
@@ -48,8 +53,8 @@ export default function useUserNeeds(houseId: string): [
   );
 
   useEffect(() => {
-    if (houseId !== "") fetchUserNeeds(houseId);
-  }, [houseId, fetchUserNeeds]);
+    if (userId !== "") fetchUserNeeds(userId);
+  }, [userId, fetchUserNeeds]);
 
   const handlers = useMemo(
     () => ({

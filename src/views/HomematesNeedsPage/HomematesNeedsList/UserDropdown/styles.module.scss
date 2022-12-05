@@ -61,8 +61,25 @@
   }
 
   ul {
-    li {
+    .needItem {
       margin-bottom: 8px;
+      display: flex;
+      gap: 8px;
+      cursor: pointer;
+
+      .needName {
+        align-self: center;
+
+        &.withLink {
+          text-decoration: underline;
+        }
+      }
+
+      .icon {
+        align-self: center;
+        display: inline-block;
+        height: 16px;
+      }
     }
   }
 }
