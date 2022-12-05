@@ -1,7 +1,6 @@
+import { User } from "./User";
 import { UserNeed } from "./UserNeed";
 
-export interface ProfilesNeed {
-  firstName: string;
-  id: string;
+export interface ProfilesNeed extends User {
   userNeeds: UserNeed[];
 }
