@@ -31,7 +31,7 @@ export default function useUserNeeds(houseId: string): [
       let { data, error } = await supabase
         .from("profiles")
         .select(
-          `userNeeds: user-needs (
+          `userNeeds: user-needs!user-needs_user_id_fkey (
               id, need, createdAt:created_at, active
           )`
         )
