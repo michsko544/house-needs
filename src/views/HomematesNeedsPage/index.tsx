@@ -1,5 +1,6 @@
 import { PostgrestError } from "@supabase/supabase-js";
 import ContentWithLabel from "components/ContentWithLabel";
+import HouseSelector from "components/HouseSelector";
 import { ProfilesNeed } from "models/ProfilesNeed";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -74,6 +75,9 @@ export default function HomematesNeedsPage(): JSX.Element {
 
   return (
     <div className="contentContainer">
+      <ContentWithLabel title="Current house">
+        <HouseSelector />
+      </ContentWithLabel>
       <ContentWithLabel
         title={`${
           house?.name !== "" && house?.name !== undefined

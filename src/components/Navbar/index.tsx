@@ -3,13 +3,13 @@ import { ReactComponent as HomeIcon } from "assets/home.svg";
 import { ReactComponent as UserIcon } from "assets/user.svg";
 import { ReactComponent as UserPlusIcon } from "assets/user-plus.svg";
 import { ReactComponent as UsersIcon } from "assets/users.svg";
-import { ReactComponent as SettingsIcon } from "assets/settings.svg";
+import { ReactComponent as BurgerIcon } from "assets/menu.svg";
 import { ReactComponent as XIcon } from "assets/x.svg";
 import { ReactComponent as LogoutIcon } from "assets/log-out.svg";
+import { ReactComponent as ChevronRightIcon } from "assets/chevron-right.svg";
 import { NavLink, useHistory, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import classnames from "classnames";
-import { UserNeed } from "models/UserNeed";
 
 import styles from "./styles.module.scss";
 import { RootState } from "store";
@@ -17,11 +17,6 @@ import { useSelector, useDispatch } from "react-redux";
 import useOutsideClick from "hooks/useOutsideClick";
 import { supabase } from "supabase";
 import { logout } from "store/auth";
-import NeedsList from "components/NeedsList";
-import { UserNeedEdit } from "models/UserNeed";
-import useUserNeeds from "hooks/useUserNeeds";
-import AddNeedInput from "components/AddNeedInput";
-import { updateProfileNeeds } from "store/profilesNeeds";
 import useSearchParams from "hooks/useSearchParams";
 
 export default function Navbar(): JSX.Element {
@@ -30,47 +25,12 @@ export default function Navbar(): JSX.Element {
 
   const dispatch = useDispatch();
   const history = useHistory();
-  const user = supabase.auth.user();
-  const userNeeds = useSelector(
-    (state: RootState) => state.userNeeds.userNeeds
-  );
-  const profilesNeeds = useSelector(
-    (state: RootState) => state.profilesNeeds.profilesNeeds
-  );
+
   const isLoggedin = useSelector((state: RootState) => state.auth.isLoggedin);
   const [line, setLine] = useState(styles.line1);
   const [isOpen, setOpen] = useState(false);
   const settingsRef = useRef(null);
   const settingsBgRef = useRef(null);
-  const [{ deleteNeed }, { isLoading, error }, refetch] = useUserNeeds(
-    user?.id || ""
-  );
-
-  const addUserNeed = async (need: UserNeedEdit) => {
-    const { data: newNeed } = await supabase
-      .from("user-needs")
-      .insert([need])
-      .single();
-    refetch(user?.id || "");
-    const found = profilesNeeds.find(
-      (profileNeeds) => profileNeeds.id === user?.id
-    );
-    if (found) {
-      const needsToSet = [...found.userNeeds];
-      needsToSet.push(newNeed as UserNeed);
-      dispatch(updateProfileNeeds({ ...found, userNeeds: needsToSet }));
-    }
-  };
-
-  const deleteUserNeed = async (id: string) => {
-    const { error } = await supabase
-      .from("user-needs")
-      .update({ active: false })
-      .eq("id", id)
-      .single();
-
-    if (!error) deleteNeed(id);
-  };
 
   const toggleOpen = (state: boolean) => setOpen(!state);
   useOutsideClick(settingsRef, () => toggleOpen(isOpen), settingsBgRef);
@@ -88,10 +48,10 @@ export default function Navbar(): JSX.Element {
       case "/":
         setLine(styles.line1);
         break;
-      case "/homemates-needs":
+      case "/personal-needs":
         setLine(styles.line2);
         break;
-      case "/houses":
+      case "/homemates-needs":
         setLine(styles.line3);
         break;
       case "/register":
@@ -105,22 +65,13 @@ export default function Navbar(): JSX.Element {
     }
   }, [location]);
 
-  const handleNeedAdd = (text: string) => {
-    if (user)
-      addUserNeed({
-        need: text,
-        active: true,
-        user_id: user.id,
-      });
-  };
-
   return (
     <>
       <header className={styles.header}>
         <div className="contentContainer">
           <div className={styles.topHeaderWrapper}>
             <h1>House Needs</h1>
-            {isLoggedin && <SettingsIcon onClick={() => toggleOpen(isOpen)} />}
+            {isLoggedin && <BurgerIcon onClick={() => toggleOpen(isOpen)} />}
           </div>
         </div>
         <nav className={classnames(styles.navigation, line)}>
@@ -129,10 +80,10 @@ export default function Navbar(): JSX.Element {
               <NavLink to="/">
                 <HomeIcon />
               </NavLink>
-              <NavLink to="/homemates-needs">
+              <NavLink to="/personal-needs">
                 <UserIcon />
               </NavLink>
-              <NavLink to="/houses">
+              <NavLink to="/homemates-needs">
                 <UsersIcon />
               </NavLink>
               {/* <NavLink to="/messages">
@@ -177,22 +128,38 @@ export default function Navbar(): JSX.Element {
               <span>Logout</span>
             </div>
 
-            <div className={styles.userNeedsWrapper}>
-              {error && <p>{"Something went wrong :("}</p>}
-              {isLoading && userNeeds.length === 0 && (
-                <p className="loader">Loading...</p>
-              )}
-              {userNeeds.length > 0 && !isLoading && (
-                <NeedsList
-                  title="Your needs"
-                  needs={userNeeds}
-                  onNeedClick={() => {}}
-                  onTrashClick={deleteUserNeed}
-                  labelAlign="right"
-                />
-              )}
+            <div className={styles.navList}>
+              <ul className={styles.navListMain}>
+                <li
+                  onClick={() => toggleOpen(isOpen)}
+                  className={styles.navListMainItem}
+                >
+                  <div
+                    className={classnames(
+                      styles.chevronIcon,
+                      location.pathname === "/personal-needs" && styles.active
+                    )}
+                  >
+                    <ChevronRightIcon />
+                  </div>
+                  <NavLink to="/personal-needs">My Needs</NavLink>
+                </li>
+                <li
+                  onClick={() => toggleOpen(isOpen)}
+                  className={styles.navListMainItem}
+                >
+                  <div
+                    className={classnames(
+                      styles.chevronIcon,
+                      location.pathname === "/houses" && styles.active
+                    )}
+                  >
+                    <ChevronRightIcon />
+                  </div>
+                  <NavLink to="/houses">My Houses</NavLink>
+                </li>
+              </ul>
             </div>
-            <AddNeedInput onCheckClick={handleNeedAdd} />
           </div>
         </div>
       </div>

@@ -1,0 +1,16 @@
+@import "~styles/variables";
+@import "~styles/mixins";
+
+.chip {
+  padding: 12px 16px;
+  color: $black;
+  @include font-size-14;
+  background: $gray-color;
+  cursor: pointer;
+  transition: 0.3s all;
+
+  &.active {
+    background: $black;
+    color: $white;
+  }
+}
