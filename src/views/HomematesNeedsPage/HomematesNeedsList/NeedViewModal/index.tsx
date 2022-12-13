@@ -5,6 +5,7 @@ import styles from "./styles.module.scss";
 import { ReactComponent as UserIcon } from "assets/user.svg";
 import { ReactComponent as XIcon } from "assets/x.svg";
 import { ReactComponent as LockIcon } from "assets/lock.svg";
+import { ReactComponent as NewIcon } from "assets/new.svg";
 import Button from "components/Button";
 
 import { supabase } from "supabase";
@@ -17,6 +18,7 @@ import { setProfilesNeeds } from "store/profilesNeeds";
 import { RootState } from "store";
 import { useState } from "react";
 import { PostgrestError } from "@supabase/supabase-js";
+import { isDateFromThisWeek } from "utils/date";
 
 type Props = {
   handleClose: () => void;
@@ -147,7 +149,12 @@ export default function NeedViewModalModal(props: Props): JSX.Element {
                 {need.need}
               </ContentWithLabel>
               <ContentWithLabel title="Created at" size={14}>
-                {new Date(need.createdAt).toDateString()}
+                <div>
+                  <span>{new Date(need.createdAt).toDateString()}</span>
+                  <span className={styles.dateNewIcon}>
+                    {isDateFromThisWeek(need.createdAt) && <NewIcon />}
+                  </span>
+                </div>
               </ContentWithLabel>
               {need.needUrl !== "" && (
                 <ContentWithLabel title="Link" size={14}>

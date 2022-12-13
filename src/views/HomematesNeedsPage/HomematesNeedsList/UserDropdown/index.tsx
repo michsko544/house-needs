@@ -3,11 +3,13 @@ import { supabase } from "supabase";
 import { ReactComponent as UserIcon } from "assets/user.svg";
 import { ReactComponent as ChevronDownIcon } from "assets/chevron-down.svg";
 import { ReactComponent as LockIcon } from "assets/lock.svg";
+import { ReactComponent as NewIcon } from "assets/new.svg";
 import { useState } from "react";
 import classnames from "classnames";
 import { ProfilesNeed } from "models/ProfilesNeed";
 import NeedViewModalModal from "../NeedViewModal";
 import { UserNeed } from "models/UserNeed";
+import { isDateFromThisWeek } from "utils/date";
 
 interface Props {
   user: ProfilesNeed;
@@ -66,6 +68,11 @@ export default function UserDropdown(props: Props): JSX.Element {
                 {need.sponsor && !isYou && (
                   <span className={styles.icon}>
                     <LockIcon />
+                  </span>
+                )}
+                {isDateFromThisWeek(need.createdAt) && (
+                  <span className={styles.icon}>
+                    <NewIcon />
                   </span>
                 )}
               </li>

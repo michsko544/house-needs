@@ -1,0 +1,15 @@
+.close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+}
+
+.alignBottom {
+  margin-top: auto;
+}
+
+.modalContent {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}

@@ -1,7 +1,8 @@
 @import "~styles/_variables";
+@import "~styles/mixins";
 
 .header {
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
@@ -48,24 +49,28 @@
     left: 0;
     background-color: $black;
     transition: cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s transform;
+    opacity: 0;
   }
 }
 
 .line1 {
   &::after {
     transform: translate(0%, 0);
+    opacity: 1;
   }
 }
 
 .line2 {
   &::after {
     transform: translate(100%, 0);
+    opacity: 1;
   }
 }
 
 .line3 {
   &::after {
     transform: translate(200%, 0);
+    opacity: 1;
   }
 }
 
@@ -106,6 +111,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    height: 100%;
   }
 
   .close {
@@ -122,6 +128,40 @@
 
     span {
       font-weight: bold;
+    }
+  }
+}
+
+.navList {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  height: 260px;
+  translate: 0 -50%;
+
+  .navListMain {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .navListMainItem {
+    font-size: 20px;
+    line-height: 31px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    text-align: right;
+    gap: 12px;
+
+    .chevronIcon {
+      height: 24px;
+      color: rgba(0, 0, 0, 0.16);
+
+      &.active {
+        color: $black;
+      }
     }
   }
 }

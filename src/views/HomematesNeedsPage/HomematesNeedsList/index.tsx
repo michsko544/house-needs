@@ -2,6 +2,8 @@ import { PostgrestError } from "@supabase/postgrest-js";
 import { ProfilesNeed } from "models/ProfilesNeed";
 import UserDropdown from "./UserDropdown";
 
+import styles from "./styles.module.scss";
+
 type Props = {
   profilesNeeds: ProfilesNeed[];
   isLoading: boolean;
@@ -18,7 +20,7 @@ export type UserNeedPrepared = {
 export default function HomematesNeedsList(props: Props): JSX.Element {
   const { profilesNeeds, isLoading, error, isUninitialized } = props;
   return (
-    <div>
+    <div className={styles.homematesNeedsList}>
       {profilesNeeds.length > 0 ? (
         profilesNeeds.map((user) => <UserDropdown user={user} key={user.id} />)
       ) : isLoading ? (

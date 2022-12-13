@@ -4,16 +4,18 @@ import { ReactComponent as XIcon } from "assets/x.svg";
 import ContentWithLabel from "components/ContentWithLabel";
 import { Need } from "models/Need";
 
-type Props = {
+type Props<TNeed> = {
   title: string;
-  needs: Need[];
+  needs: TNeed[];
   active?: boolean;
-  onNeedClick: (need: Need) => void;
+  onNeedClick: (need: TNeed) => void;
   onTrashClick?: (id: string) => void;
   labelAlign?: "left" | "right";
 };
 
-export default function NeedsList(props: Props): JSX.Element {
+export default function NeedsList<TNeed extends Need>(
+  props: Props<TNeed>
+): JSX.Element {
   const {
     title = "Needs",
     needs = [],

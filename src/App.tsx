@@ -9,6 +9,7 @@ import PrivateRoute from "components/PrivateRoute";
 import AppInit from "components/AppInit";
 import HousesPage from "views/HousesPage";
 import JoinPage from "views/JoinPage";
+import PersonalNeedsPage from "views/PersonalNeedsPage";
 
 function App() {
   return (
@@ -24,6 +25,9 @@ function App() {
         </PrivateRoute>
         <PrivateRoute path="/houses">
           <HousesPage />
+        </PrivateRoute>
+        <PrivateRoute path="/personal-needs">
+          <PersonalNeedsPage />
         </PrivateRoute>
         <PublicRoute path="/login">
           <LoginPage />
